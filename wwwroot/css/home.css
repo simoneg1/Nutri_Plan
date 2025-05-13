@@ -1,0 +1,251 @@
+﻿/* Stili per la home page */
+.home-container {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Banner di benvenuto */
+.welcome-banner {
+    background: linear-gradient(135deg, #9be15d 0%, #00e3ae 100%);
+    color: white;
+    padding: 60px 0;
+    border-radius: 0 0 15px 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+    .welcome-banner h1 {
+        font-size: 2.8rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .welcome-banner .user-name {
+        color: #ffffff;
+        font-weight: 800;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.7);
+    }
+
+    .welcome-banner p {
+        font-size: 1.3rem;
+        margin-bottom: 1.5rem;
+        opacity: 0.95;
+    }
+
+.welcome-image {
+    max-height: 250px;
+    filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.2));
+}
+
+/* Feature cards */
+.feature-card {
+    background-color: #fff;
+    border-radius: 15px;
+    padding: 30px 25px;
+    text-align: center;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    height: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+.feature-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #9be15d 0%, #00e3ae 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+
+    .feature-icon i {
+        font-size: 32px;
+        color: white;
+    }
+
+.feature-card h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.feature-card p {
+    color: #666;
+    font-size: 1rem;
+    margin-bottom: 20px;
+    flex-grow: 1;
+}
+
+/* Current plan card */
+.current-plan-card {
+    background-color: #fff;
+    border-radius: 15px;
+    padding: 25px;
+    margin-top: 30px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    border-left: 5px solid #00b760;
+}
+
+    .current-plan-card h3 {
+        color: #333;
+        font-weight: 600;
+        margin-bottom: 20px;
+        font-size: 1.7rem;
+    }
+
+    .current-plan-card h4 {
+        color: #555;
+        font-size: 1.3rem;
+        font-weight: 500;
+    }
+
+.nutrition-stat {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    height: 100%;
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #00b760;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    display: block;
+    font-size: 1rem;
+    color: #666;
+}
+
+/* Profile setup card */
+.setup-profile-card {
+    background-color: #fff;
+    border-radius: 15px;
+    padding: 30px;
+    margin-top: 30px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    border: 1px dashed #ccc;
+}
+
+.setup-icon {
+    width: 90px;
+    height: 90px;
+    background-color: #f8f9fa;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 25px;
+    border: 2px dashed #00b760;
+}
+
+    .setup-icon i {
+        font-size: 40px;
+        color: #00b760;
+    }
+
+.setup-profile-card h3 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.setup-profile-card p {
+    color: #666;
+    margin-bottom: 25px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Tips section */
+.nutrition-tips {
+    background-color: #f8f9fa;
+    padding: 60px 0;
+    margin-top: 60px;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 40px;
+    color: #333;
+    position: relative;
+}
+
+    .section-title:after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(to right, #9be15d, #00e3ae);
+        transform: translateX(-50%);
+        border-radius: 2px;
+    }
+
+.tip-card {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 25px;
+    height: 100%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+}
+
+    .tip-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .tip-card h4 {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #333;
+    }
+
+    .tip-card i {
+        color: #00b760;
+    }
+
+    .tip-card p {
+        color: #666;
+        margin-bottom: 0;
+    }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .welcome-banner {
+        padding: 40px 0;
+        text-align: center;
+    }
+
+        .welcome-banner h1 {
+            font-size: 2.3rem;
+        }
+
+        .welcome-banner p {
+            font-size: 1.1rem;
+        }
+
+    .feature-card, .tip-card {
+        margin-bottom: 20px;
+    }
+
+    .nutrition-stat {
+        margin-bottom: 15px;
+    }
+}

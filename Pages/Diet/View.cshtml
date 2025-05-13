@@ -1,0 +1,672 @@
+﻿@page "{id?}"
+@model Nutri_Plan.Pages.Diet.ViewModel
+@{
+    ViewData["Title"] = Model.Diet != null ? Model.Diet.Title : "Piano Alimentare";
+}
+
+<div class="container py-5">
+    @if (!string.IsNullOrEmpty(TempData["SuccessMessage"]?.ToString()))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Visualizzazione storico diete -->
+    @if (Model.UserDiets != null && Model.UserDiets.Count > 0)
+    {
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-history me-2"></i>I tuoi piani alimentari
+                    </h5>
+                    <a href="/Diet/Create" class="btn btn-sm btn-success">
+                        <i class="fas fa-plus me-1"></i>Nuovo piano
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="diet-history">
+                    <div class="d-flex flex-nowrap overflow-auto pb-3 diet-scroll">
+                        @foreach (var diet in Model.UserDiets)
+                        {
+                            <div class="diet-card @(diet.Id == Model.Diet?.Id ? "active" : "")">
+                                <div class="diet-card-inner">
+                                    <div class="diet-card-header">
+                                        <h5 class="diet-card-title">@diet.Title</h5>
+                                        <form method="post" asp-page-handler="Delete" onsubmit="return confirm('Sei sicuro di voler eliminare il piano alimentare \'@diet.Title\'? Questa operazione non può essere annullata.');">
+                                            <input type="hidden" name="id" value="@diet.Id" />
+                                            <button type="submit" class="btn-delete" title="Elimina piano">
+                                                <i class="fas fa-trash-alt text-danger"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <a href="/Diet/View/@diet.Id" class="diet-card-link">
+                                        <div class="diet-card-date">
+                                            <i class="far fa-calendar-alt me-1"></i>
+                                            @diet.CreatedAt.ToString("dd/MM/yyyy")
+                                        </div>
+                                        <div class="diet-card-calories">
+                                            <i class="fas fa-fire me-1"></i>
+                                            @diet.TotalCalories kcal
+                                        </div>
+                                        @if (diet.IsActive)
+                                        {
+                                            <div class="active-badge">
+                                                <i class="fas fa-check-circle"></i> Attivo
+                                            </div>
+                                        }
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="d-flex justify-content-end mb-4">
+            <a href="/Diet/Create" class="btn btn-success">
+                <i class="fas fa-plus me-1"></i>Crea nuovo piano alimentare
+            </a>
+        </div>
+    }
+
+    @if (Model.Diet == null)
+    {
+        <div class="alert alert-warning" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i> Piano alimentare non trovato.
+            <a href="/Diet/Create" class="btn btn-primary btn-sm ms-3">Crea un nuovo piano</a>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-9">
+                <h1 class="mb-0">@Model.Diet.Title</h1>
+                <p class="text-muted">Creato il @Model.Diet.CreatedAt.ToString("dd/MM/yyyy")</p>
+            </div>
+            <div class="col-md-3 text-end">
+                <div class="btn-group">
+                    <a href="/Diet/Print/@Model.Diet.Id" class="btn btn-outline-primary">
+                        <i class="fas fa-print me-2"></i>Stampa
+                    </a>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#shareDietModal">
+                        <i class="fas fa-share-alt me-2"></i>Condividi
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card shadow mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="mb-0">Riepilogo Nutrizionale</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <div class="nutrition-stat text-center">
+                                    <div class="nutrition-circle calories">
+                                        <span class="nutrition-value">@Model.Diet.TotalCalories</span>
+                                        <span class="nutrition-unit">kcal</span>
+                                    </div>
+                                    <h5 class="mt-2">Calorie</h5>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="nutrition-stat text-center">
+                                    <div class="nutrition-circle protein">
+                                        <span class="nutrition-value">@Math.Round(Model.Diet.TotalProtein)</span>
+                                        <span class="nutrition-unit">g</span>
+                                    </div>
+                                    <h5 class="mt-2">Proteine</h5>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="nutrition-stat text-center">
+                                    <div class="nutrition-circle carbs">
+                                        <span class="nutrition-value">@Math.Round(Model.Diet.TotalCarbs)</span>
+                                        <span class="nutrition-unit">g</span>
+                                    </div>
+                                    <h5 class="mt-2">Carboidrati</h5>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="nutrition-stat text-center">
+                                    <div class="nutrition-circle fat">
+                                        <span class="nutrition-value">@Math.Round(Model.Diet.TotalFat)</span>
+                                        <span class="nutrition-unit">g</span>
+                                    </div>
+                                    <h5 class="mt-2">Grassi</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card shadow">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Piano Alimentare Completo</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="diet-plan-content">
+                            @Html.Raw(Model.FormattedDietPlan)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal per la condivisione -->
+        <div class="modal fade" id="shareDietModal" tabindex="-1" aria-labelledby="shareDietModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-light">
+                        <h5 class="modal-title" id="shareDietModalLabel">Condividi Piano Alimentare</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" value="@($"{Request.Scheme}://{Request.Host}/Diet/View/{Model.Diet.Id}")" id="dietShareLink" readonly>
+                            <button class="btn btn-outline-primary" type="button" id="copyLinkButton">Copia</button>
+                        </div>
+
+                        <p class="text-center text-muted small">Oppure condividi su</p>
+
+                        <div class="d-flex justify-content-center gap-3 mt-3">
+                            <a href="javascript:void(0)" class="btn btn-outline-primary" id="shareWhatsApp">
+                                <i class="fab fa-whatsapp"></i>
+                            </a>
+                            <a href="javascript:void(0)" class="btn btn-outline-primary" id="shareEmail">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Gestione del pulsante di copia del link
+            $('#copyLinkButton').click(function() {
+                const copyText = document.getElementById("dietShareLink");
+                copyText.select();
+                copyText.setSelectionRange(0, 99999); // Per dispositivi mobili
+                document.execCommand("copy");
+
+                // Cambia il testo del pulsante temporaneamente
+                const btn = $(this);
+                const originalText = btn.text();
+                btn.text("Copiato!");
+                setTimeout(function() {
+                    btn.text(originalText);
+                }, 1500);
+            });
+
+            // Condivisione su WhatsApp
+            $('#shareWhatsApp').click(function() {
+                const shareLink = encodeURIComponent(document.getElementById("dietShareLink").value);
+                const shareText = encodeURIComponent("Guarda il mio piano alimentare personalizzato!");
+                window.open(`https://wa.me/?text=${shareText} ${shareLink}`, '_blank');
+            });
+
+            // Condivisione via Email
+            $('#shareEmail').click(function() {
+                const shareLink = document.getElementById("dietShareLink").value;
+                const subject = encodeURIComponent("Piano Alimentare Personalizzato");
+                const body = encodeURIComponent(`Ciao!\n\nVolevo condividere con te il mio piano alimentare personalizzato.\n\nPuoi vederlo qui: ${shareLink}\n\nCreato con Nutri_Plan.`);
+                window.location.href = `mailto:?subject=${subject}&body=${body}`;
+            });
+            
+            // Aggiungi smooth scroll per i link di ancoraggio ai giorni
+            $(document).on('click', '.day-nav-link', function(e) {
+                e.preventDefault();
+                const targetId = $(this).attr('href');
+                $('html, body').animate({
+                    scrollTop: $(targetId).offset().top - 100
+                }, 500);
+            });
+        });
+    </script>
+
+    <style>
+        /* Stile delle card dei piani alimentari (visione storica) */
+        .diet-history {
+            position: relative;
+        }
+
+        .diet-scroll {
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            gap: 1rem;
+        }
+
+        .diet-card {
+            flex: 0 0 auto;
+            width: 230px;
+            color: inherit;
+            margin-right: 15px;
+        }
+
+        .diet-card-inner {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 1rem;
+            height: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .diet-card-link {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .diet-card:hover .diet-card-inner {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .diet-card.active .diet-card-inner {
+            border: 2px solid #28a745;
+            background-color: #f6fff8;
+        }
+
+        .diet-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .diet-card-title {
+            font-size: 1rem;
+            margin-bottom: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #333;
+            max-width: 170px;
+        }
+
+        .diet-card-date, .diet-card-calories {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .diet-card-calories {
+            color: #e74c3c;
+            font-weight: 500;
+        }
+        
+        .active-badge {
+            margin-top: 0.5rem;
+            background-color: #28a745;
+            color: white;
+            border-radius: 50px;
+            padding: 3px 10px;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-delete {
+            background: none;
+            border: none;
+            padding: 0;
+            font-size: 0.9rem;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .btn-delete:hover {
+            opacity: 1;
+        }
+
+        /* Stile dei cerchi nutrizionali */
+        .nutrition-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+            color: white;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .nutrition-circle.calories {
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
+        }
+
+        .nutrition-circle.protein {
+            background: linear-gradient(135deg, #56ab2f, #a8e063);
+        }
+
+        .nutrition-circle.carbs {
+            background: linear-gradient(135deg, #5e9cd4, #9fd3c7);
+        }
+
+        .nutrition-circle.fat {
+            background: linear-gradient(135deg, #e04e41, #f37970);
+        }
+
+        .nutrition-value {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .nutrition-unit {
+            font-size: 1rem;
+            opacity: 0.8;
+            font-weight: 400;
+        }
+
+        /* Stili per il piano alimentare completo */
+        .diet-plan-content {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 0;
+        }
+
+        .complete-diet-plan {
+            margin-bottom: 40px;
+        }
+
+        .diet-plan-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .diet-plan-header h1 {
+            font-weight: 700;
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+
+        .diet-plan-description {
+            font-size: 1.1rem;
+            color: #6c757d;
+        }
+
+        .diet-day-section {
+            margin-bottom: 40px;
+            border: 1px solid #eaeaea;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+
+        .day-header {
+            background-color: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .day-header h2 {
+            font-weight: 600;
+            font-size: 1.6rem;
+            color: #28a745;
+            margin: 0;
+        }
+
+        .day-macros {
+            padding: 10px 20px;
+            background-color: #f0fff0;
+        }
+
+        .macro-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .macro-pill {
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            color: white;
+        }
+
+        .macro-pill i {
+            margin-right: 5px;
+        }
+
+        .macro-pill.calories { background-color: #f39c12; }
+        .macro-pill.protein { background-color: #27ae60; }
+        .macro-pill.carbs { background-color: #3498db; }
+        .macro-pill.fat { background-color: #e74c3c; }
+
+        .day-meals {
+            padding: 20px;
+        }
+
+        .meal-card {
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .meal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #eee;
+        }
+
+        .meal-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .meal-calories {
+            background-color: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .meal-content {
+            padding: 15px;
+        }
+
+        .meal-foods .food-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin-bottom: 15px;
+        }
+
+        .meal-foods .food-list li {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .meal-foods .food-list li i {
+            margin-right: 10px;
+            color: #28a745;
+        }
+
+        .meal-macros {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #eee;
+        }
+
+        .macro-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #f8f9fa;
+            padding: 6px 12px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .day-totals {
+            margin-top: 30px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 4px solid #28a745;
+        }
+
+        .day-totals h4 {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .total-macros {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 15px;
+        }
+
+        .total-macro-item {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            color: white;
+            position: relative;
+        }
+
+        .total-macro-item i {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.1rem;
+            opacity: 0.4;
+        }
+
+        .total-macro-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .total-macro-label {
+            font-size: 0.85rem;
+            margin-top: 5px;
+            opacity: 0.9;
+        }
+
+                .total-macro-item.calories { background-color: #f39c12; }
+        .total-macro-item.protein { background-color: #27ae60; }
+        .total-macro-item.carbs { background-color: #3498db; }
+        .total-macro-item.fat { background-color: #e74c3c; }
+
+        .no-meals-message {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .no-meals-message i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            opacity: 0.4;
+        }
+
+        .generic-content .content-sections {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .generic-content .content-sections li {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .generic-content .content-sections li i {
+            margin-right: 10px;
+            margin-top: 3px;
+        }
+
+        /* Stili responsive */
+        @@media (max-width: 768px) {
+            .nutrition-circle {
+                width: 90px;
+                height: 90px;
+            }
+            
+            .nutrition-value {
+                font-size: 1.5rem;
+            }
+            
+            .meal-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .meal-calories {
+                margin-top: 5px;
+            }
+            
+            .macro-pills {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .total-macros {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .diet-card {
+                width: 180px;
+            }
+            
+            .day-header {
+                padding: 10px 15px;
+            }
+            
+            .day-header h2 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+}

@@ -1,0 +1,11 @@
+﻿/* Nasconde gli alert vuoti */
+.alert:empty,
+.alert:not(:has(*)) {
+    display: none !important;
+}
+
+/* Fix per alert con contenuto vuoto */
+.alert div:empty,
+.validation-summary-valid {
+    display: none !important;
+}

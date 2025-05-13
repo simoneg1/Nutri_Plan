@@ -1,0 +1,629 @@
+﻿@page
+@model Nutri_Plan.Pages.FoodsModel
+@{
+    ViewData["Title"] = "Esplora Alimenti - Nutri_Plan";
+}
+
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-md-8 offset-md-2">
+            <div class="text-center mb-4">
+                <h1 class="display-4">Esplora Alimenti</h1>
+                <p class="lead">Scopri i valori nutrizionali di qualsiasi alimento</p>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form method="post" id="searchForm">
+                        <div class="input-group mb-3">
+                            <input type="text" asp-for="FoodQuery" class="form-control form-control-lg" 
+                                   placeholder="Cerca un alimento (es. mela, pasta, pollo...)" 
+                                   aria-label="Cerca alimento" aria-describedby="searchButton">
+                            <button class="btn btn-primary" type="submit" id="searchButton">
+                                <i class="fas fa-search me-2"></i>Cerca
+                            </button>
+                        </div>
+                        <span asp-validation-for="FoodQuery" class="text-danger"></span>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.IsSearching)
+    {
+        <div class="row mt-5">
+            <div class="col-md-8 offset-md-2">
+                <div class="text-center">
+                    <div class="spinner-border text-success" role="status">
+                        <span class="visually-hidden">Caricamento...</span>
+                    </div>
+                    <p class="mt-3">Ricerca informazioni nutrizionali su "@Model.FoodQuery"...</p>
+                </div>
+            </div>
+        </div>
+    }
+    else if (Model.HasSearched)
+    {
+        <div class="row mt-4">
+            <div class="col-md-10 offset-md-1">
+                @if (Model.SearchedFood != null)
+                {
+                    <div class="food-result-card">
+                        <div class="food-header">
+                            <h2>@Model.SearchedFood.Nome</h2>
+                            <p class="food-description">Valori nutrizionali per 100g di prodotto</p>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="food-nutrition">
+                                    <div class="macro-stats">
+                                        <h3>Macronutrienti</h3>
+                                        <div class="row">
+                                            <div class="col-6 mb-3">
+                                                <div class="macro-card protein">
+                                                    <div class="macro-icon">
+                                                        <i class="fas fa-drumstick-bite"></i>
+                                                    </div>
+                                                    <div class="macro-content">
+                                                        <span class="macro-title">Proteine</span>
+                                                        <span class="macro-value">@Model.SearchedFood.Proteine g</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 mb-3">
+                                                <div class="macro-card carbs">
+                                                    <div class="macro-icon">
+                                                        <i class="fas fa-bread-slice"></i>
+                                                    </div>
+                                                    <div class="macro-content">
+                                                        <span class="macro-title">Carboidrati</span>
+                                                        <span class="macro-value">@Model.SearchedFood.Carboidrati g</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 mb-3">
+                                                <div class="macro-card fat">
+                                                    <div class="macro-icon">
+                                                        <i class="fas fa-cheese"></i>
+                                                    </div>
+                                                    <div class="macro-content">
+                                                        <span class="macro-title">Grassi</span>
+                                                        <span class="macro-value">@Model.SearchedFood.Grassi g</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 mb-3">
+                                                <div class="macro-card fiber">
+                                                    <div class="macro-icon">
+                                                        <i class="fas fa-seedling"></i>
+                                                    </div>
+                                                    <div class="macro-content">
+                                                        <span class="macro-title">Fibre</span>
+                                                        <span class="macro-value">@Model.SearchedFood.Fibre g</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="additional-info mt-4">
+                                        <h4>Tabella Nutrizionale</h4>
+                                        <table class="table table-striped">
+                                            <tr>
+                                                <th>Porzione</th>
+                                                <td>100 g</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Calorie</th>
+                                                <td>@Model.SearchedFood.Calorie kcal</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Proteine</th>
+                                                <td>@Model.SearchedFood.Proteine g</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Carboidrati</th>
+                                                <td>@Model.SearchedFood.Carboidrati g</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Grassi</th>
+                                                <td>@Model.SearchedFood.Grassi g</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Fibre</th>
+                                                <td>@Model.SearchedFood.Fibre g</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="nutrition-visual">
+                                    <h3>Distribuzione Energetica</h3>
+                                    
+                                    <div class="donut-chart-container">
+                                        <canvas id="macroChart" width="300" height="300"></canvas>
+                                    </div>
+                                    
+                                    <div class="calorie-circle mt-4">
+                                        <div class="calorie-value">@Model.SearchedFood.Calorie</div>
+                                        <div class="calorie-unit">kcal</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <h3>Informazioni Nutrizionali</h3>
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <p>
+                                                <i class="fas fa-info-circle text-primary"></i>
+                                                <strong>@Model.SearchedFood.Nome</strong> fornisce @Model.SearchedFood.Calorie kcal per 100g, con un profilo nutrizionale composto da @Model.SearchedFood.Proteine g di proteine, @Model.SearchedFood.Carboidrati g di carboidrati e @Model.SearchedFood.Grassi g di grassi.
+                                            </p>
+                                            <p>
+                                                <i class="fas fa-percentage text-success"></i>
+                                                <strong>Distribuzione calorica:</strong>
+                                                @{ 
+                                                    double totalCalories = Model.SearchedFood.Calorie > 0 ? Model.SearchedFood.Calorie : 1;
+                                                    double proteinPercent = Math.Round((Model.SearchedFood.Proteine * 4) / totalCalories * 100);
+                                                    double carbsPercent = Math.Round((Model.SearchedFood.Carboidrati * 4) / totalCalories * 100);
+                                                    double fatPercent = Math.Round((Model.SearchedFood.Grassi * 9) / totalCalories * 100);
+                                                }
+                                                @proteinPercent% da proteine, @carbsPercent% da carboidrati e @fatPercent% da grassi.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-warning">
+                        <h4 class="alert-heading">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            Informazioni non trovate
+                        </h4>
+                        <p>@(Model.ErrorMessage ?? "Non è stato possibile trovare informazioni per questo alimento. Prova con un altro termine di ricerca.")</p>
+                    </div>
+                }
+            </div>
+        </div>
+        
+        <!-- Altri alimenti suggeriti -->
+        @if (Model.PopularFoods != null && Model.PopularFoods.Any())
+        {
+            <div class="row mt-5">
+                <div class="col-12">
+                    <h3 class="text-center mb-4">Altri alimenti</h3>
+                    <div class="row">
+                        @foreach (var food in Model.PopularFoods.Take(8))
+                        {
+                            <div class="col-md-3 col-sm-6 mb-4">
+                                <a href="javascript:void(0)" class="food-suggestion" onclick="searchFood('@food.Nome')">
+                                    <div class="food-suggestion-inner">
+                                        <div class="food-suggestion-name">@food.Nome</div>
+                                        <div class="food-suggestion-calories">@food.Calorie kcal</div>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="row mt-5">
+            <div class="col-md-8 offset-md-2 text-center">
+                <div class="food-empty-state">
+                    <i class="fas fa-search fa-4x mb-3 text-muted"></i>
+                    <h3>Cerca un alimento per scoprirne i valori nutrizionali</h3>
+                    <p class="text-muted">Inserisci il nome di un alimento nel campo di ricerca sopra</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Suggerimenti di ricerca -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="text-center mb-4">Suggerimenti di ricerca</h3>
+                <div class="food-suggestions">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <a href="javascript:void(0)" class="food-suggestion fruit" onclick="searchFood('Mela')">
+                                <i class="fas fa-apple-alt"></i>
+                                <span>Mela</span>
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="javascript:void(0)" class="food-suggestion grain" onclick="searchFood('Pane integrale')">
+                                <i class="fas fa-bread-slice"></i>
+                                <span>Pane integrale</span>
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="javascript:void(0)" class="food-suggestion protein" onclick="searchFood('Pollo')">
+                                <i class="fas fa-drumstick-bite"></i>
+                                <span>Pollo</span>
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="javascript:void(0)" class="food-suggestion veggie" onclick="searchFood('Spinaci')">
+                                <i class="fas fa-leaf"></i>
+                                <span>Spinaci</span>
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="javascript:void(0)" class="food-suggestion dairy" onclick="searchFood('Yogurt greco')">
+                                <i class="fas fa-cheese"></i>
+                                <span>Yogurt greco</span>
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="javascript:void(0)" class="food-suggestion grain" onclick="searchFood('Pasta')">
+                                <i class="fas fa-utensil-spoon"></i>
+                                <span>Pasta</span>
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="javascript:void(0)" class="food-suggestion protein" onclick="searchFood('Salmone')">
+                                <i class="fas fa-fish"></i>
+                                <span>Salmone</span>
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="javascript:void(0)" class="food-suggestion fruit" onclick="searchFood('Avocado')">
+                                <i class="fas fa-seedling"></i>
+                                <span>Avocado</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Categorie di alimenti -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="text-center mb-4">Categorie di alimenti</h3>
+                <div class="row">
+                    <div class="col-md-3 col-sm-6 mb-4">
+                        <div class="category-card">
+                            <div class="category-icon fruit-bg">
+                                <i class="fas fa-apple-alt"></i>
+                            </div>
+                            <h4>Frutta</h4>
+                            <p>Ricca di vitamine e antiossidanti</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-4">
+                        <div class="category-card">
+                            <div class="category-icon veggie-bg">
+                                <i class="fas fa-carrot"></i>
+                            </div>
+                            <h4>Verdura</h4>
+                            <p>Fonte di fibre e micronutrienti</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-4">
+                        <div class="category-card">
+                            <div class="category-icon protein-bg">
+                                <i class="fas fa-drumstick-bite"></i>
+                            </div>
+                            <h4>Proteine</h4>
+                            <p>Essenziali per la crescita muscolare</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-4">
+                        <div class="category-card">
+                            <div class="category-icon grain-bg">
+                                <i class="fas fa-bread-slice"></i>
+                            </div>
+                            <h4>Cereali</h4>
+                            <p>Fonte di energia e carboidrati complessi</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        function searchFood(foodName) {
+            $("#FoodQuery").val(foodName);
+            $("#searchForm").submit();
+        }
+        
+        $(document).ready(function() {
+            // Aggiungi animazione per i risultati della ricerca
+            $(".food-result-card").addClass("show");
+            
+            // Crea il grafico a ciambella se abbiamo un alimento cercato
+            @if (Model.SearchedFood != null)
+            {
+                <text>
+                // Calcola calorie dai macronutrienti
+                const proteinCal = @Model.SearchedFood.Proteine * 4;
+                const carbsCal = @Model.SearchedFood.Carboidrati * 4;
+                const fatCal = @Model.SearchedFood.Grassi * 9;
+                
+                const ctx = document.getElementById('macroChart').getContext('2d');
+                const macroChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Proteine', 'Carboidrati', 'Grassi'],
+                        datasets: [{
+                            data: [proteinCal, carbsCal, fatCal],
+                            backgroundColor: [
+                                '#56ab2f',  // Verde per proteine
+                                '#2980b9',  // Blu per carboidrati
+                                '#ff5e62'   // Rosso per grassi
+                            ],
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.label || '';
+                                        const value = context.raw || 0;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = Math.round((value / total) * 100);
+                                        return `${label}: ${percentage}% (${value.toFixed(0)} kcal)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+                </text>
+            }
+        });
+    </script>
+}
+
+@section Styles {
+    <style>
+        /* Stili per la pagina Foods */
+        .food-empty-state {
+            padding: 40px 20px;
+            border-radius: 10px;
+            background-color: #f8f9fa;
+            color: #6c757d;
+        }
+
+        .food-suggestions {
+            margin-top: 20px;
+        }
+
+        .food-suggestion {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.05);
+            color: #333;
+            transition: all 0.3s;
+            text-decoration: none;
+            height: 100%;
+        }
+
+        .food-suggestion-inner {
+            width: 100%;
+            text-align: center;
+        }
+
+        .food-suggestion-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .food-suggestion-calories {
+            color: #e74c3c;
+            font-size: 0.9rem;
+        }
+
+        .food-suggestion:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,.1);
+        }
+
+        .food-suggestion i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .food-suggestion.fruit i { color: #e74c3c; }
+        .food-suggestion.veggie i { color: #27ae60; }
+        .food-suggestion.protein i { color: #8e44ad; }
+        .food-suggestion.grain i { color: #d35400; }
+        .food-suggestion.dairy i { color: #3498db; }
+
+        .category-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.05);
+            padding: 20px;
+            text-align: center;
+            height: 100%;
+            transition: all 0.3s;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,.1);
+        }
+
+        .category-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+
+        .category-icon i {
+            font-size: 30px;
+            color: white;
+        }
+
+        .fruit-bg { background-color: #e74c3c; }
+        .veggie-bg { background-color: #27ae60; }
+        .protein-bg { background-color: #8e44ad; }
+        .grain-bg { background-color: #d35400; }
+
+        .food-result-card {
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,.1);
+            padding: 30px;
+            margin-bottom: 40px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+       @@keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .food-result-card.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .food-header {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .food-header h2 {
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .food-description {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+            margin-bottom: 0;
+        }
+
+        .food-nutrition h3, .nutrition-visual h3 {
+            font-size: 1.4rem;
+            color: #27ae60;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .macro-card {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-radius: 10px;
+            color: white;
+            height: 100%;
+        }
+
+        .macro-card.protein { background: linear-gradient(135deg, #56ab2f, #a8e063); }
+        .macro-card.carbs { background: linear-gradient(135deg, #2980b9, #6dd5fa); }
+        .macro-card.fat { background: linear-gradient(135deg, #ff9966, #ff5e62); }
+        .macro-card.fiber { background: linear-gradient(135deg, #8e44ad, #c86dd7); }
+
+        .macro-icon {
+            font-size: 1.8rem;
+            margin-right: 15px;
+        }
+
+        .macro-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .macro-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        .macro-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .donut-chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        .calorie-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
+            box-shadow: 0 5px 15px rgba(0,0,0,.1);
+        }
+
+        .calorie-value {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .calorie-unit {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        /* Stili responsivi */
+        @@media (max-width: 768px) {
+            .food-result-card {
+                padding: 20px;
+            }
+
+            .nutrition-circle {
+                width: 120px;
+                height: 120px;
+            }
+
+            .calorie-value {
+                font-size: 1.5rem;
+            }
+
+            .macro-card {
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+}

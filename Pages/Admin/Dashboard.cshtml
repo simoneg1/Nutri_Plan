@@ -1,0 +1,133 @@
+﻿@page
+@model Nutri_Plan.Pages.Admin.DashboardModel
+@{
+    ViewData["Title"] = "Dashboard Admin";
+    Layout = "~/Pages/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-dashboard">
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Dashboard Amministrazione</h1>
+        <p class="lead">Benvenuto, @Model.AdminUser.Nome @Model.AdminUser.Cognome. Gestisci gli utenti dell'applicazione da qui.</p>
+
+        @if (!string.IsNullOrEmpty(TempData["SuccessMessage"]?.ToString()))
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(TempData["ErrorMessage"]?.ToString()))
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <div class="row mt-4">
+            <div class="col-lg-6 col-md-6">
+                <div class="card text-white bg-primary mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="fw-bold mb-0">@Model.TotalUsers</h3>
+                                <div>Utenti Totali</div>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-users fa-3x"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+                        <a class="small text-white stretched-link" href="/Admin/Users">Visualizza dettagli</a>
+                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6">
+                <div class="card text-white bg-success mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="fw-bold mb-0">@Model.ActiveUsers</h3>
+                                <div>Utenti Attivi</div>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-user-check fa-3x"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+                        <a class="small text-white stretched-link" href="/Admin/Users?filter=active">Visualizza dettagli</a>
+                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-users me-2"></i> Utenti Recenti</h5>
+                <a href="/Admin/Users" class="btn btn-sm btn-primary">
+                    Vedi tutti gli utenti
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Data Registrazione</th>
+                                <th>Ruolo</th>
+                                <th>Azioni</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var user in Model.Users)
+                            {
+                                <tr>
+                                    <td>@user.Nome @user.Cognome</td>
+                                    <td>@user.Email</td>
+                                    <td>@(user.CreatedDate != null ? user.CreatedDate.ToString("dd/MM/yyyy") : "N/D")</td>
+                                    <td>
+                                        @if (user.IsAdmin)
+                                        {
+                                            <span class="badge bg-primary">Admin</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Utente</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="/Admin/Users/Edit/@user.Id" class="btn btn-outline-primary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form method="post" asp-page-handler="DeleteUser" asp-route-userId="@user.Id"
+                                                  onsubmit="return confirm('Sei sicuro di voler eliminare questo utente?');">
+                                                <button type="submit" class="btn btn-outline-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                            @if (!Model.Users.Any())
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center">Nessun utente trovato</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

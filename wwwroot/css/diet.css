@@ -1,0 +1,77 @@
+﻿/* Stili per le pagine della dieta */
+
+.feature-item {
+    text-align: center;
+    padding: 1.5rem;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+    .feature-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+.profile-summary {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.diet-generation-intro {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.nutrition-stat {
+    text-align: center;
+    padding: 1.5rem;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+    .nutrition-stat h3 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #333;
+    }
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.diet-plan-content {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+    .diet-plan-content h3 {
+        border-bottom: 2px solid #28a745;
+        padding-bottom: 0.5rem;
+        margin-top: 2rem;
+        font-weight: 600;
+    }
+
+    .diet-plan-content h4 {
+        margin-top: 1.5rem;
+        font-weight: 600;
+        color: #007bff;
+    }
+
+.setup-profile-card {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 2rem;
+    text-align: center;
+}
+
+.setup-icon {
+    font-size: 3rem;
+    color: #28a745;
+    margin-bottom: 1rem;
+}

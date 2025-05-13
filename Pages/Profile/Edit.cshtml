@@ -1,0 +1,138 @@
+﻿@page
+@model Nutri_Plan.Pages.Profile.EditModel
+@{
+    ViewData["Title"] = "Completa Profilo";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h2 class="mb-0 fs-4">@ViewData["Title"]</h2>
+                </div>
+                <div class="card-body">
+                    <p class="lead mb-4">Completa il tuo profilo per ricevere consigli nutrizionali personalizzati.</p>
+
+                    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i> @Model.ErrorMessage
+                        </div>
+                    }
+
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <input asp-for="Input.Eta" class="form-control" />
+                                    <label asp-for="Input.Eta"></label>
+                                    <span asp-validation-for="Input.Eta" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <input asp-for="Input.Peso" class="form-control" step="0.1" />
+                                    <label asp-for="Input.Peso"></label>
+                                    <span asp-validation-for="Input.Peso" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <input asp-for="Input.Altezza" class="form-control" step="0.1" />
+                                    <label asp-for="Input.Altezza"></label>
+                                    <span asp-validation-for="Input.Altezza" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <select asp-for="Input.LivelloAttivita" asp-items="Model.LivelloAttivitaOpzioni" class="form-select"></select>
+                                    <label asp-for="Input.LivelloAttivita"></label>
+                                    <span asp-validation-for="Input.LivelloAttivita" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <select asp-for="Input.ObbiettivoPeso" asp-items="Model.ObbiettivoPesoOpzioni" class="form-select"></select>
+                                    <label asp-for="Input.ObbiettivoPeso"></label>
+                                    <span asp-validation-for="Input.ObbiettivoPeso" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-floating">
+                                <input asp-for="Input.CiboPreferito" class="form-control" />
+                                <label asp-for="Input.CiboPreferito"></label>
+                                <span asp-validation-for="Input.CiboPreferito" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="info-box p-3 rounded bg-light">
+                                    <h5 class="mb-2"><i class="fas fa-info-circle me-2"></i>Perché queste informazioni?</h5>
+                                    <p class="small mb-0">
+                                        I dati che inserisci ci aiutano a personalizzare il tuo piano nutrizionale.
+                                        Calcoleremo il tuo fabbisogno calorico giornaliero e suggeriremo alimenti
+                                        in linea con i tuoi obiettivi e preferenze.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex flex-column h-100 justify-content-center">
+                                    <div class="alert alert-info mb-0">
+                                        <i class="fas fa-lock me-2"></i> I tuoi dati sono protetti e non saranno condivisi con terze parti.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a asp-page="/Home/Index" class="btn btn-secondary me-md-2">
+                                <i class="fas fa-times me-2"></i>Annulla
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Salva Profilo
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <p class="text-muted small">
+                    <i class="fas fa-question-circle me-1"></i>
+                    Hai domande? <a href="#">Consulta le nostre FAQ</a> o <a href="#">contattaci</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Script per visualizzare un avviso se l'utente prova a lasciare la pagina con modifiche non salvate
+        let formModified = false;
+
+        $('form').on('change', 'input, select, textarea', function () {
+            formModified = true;
+        });
+
+        $(window).on('beforeunload', function () {
+            if (formModified && $('form').attr('data-submitting') != 'true') {
+                return "Hai modifiche non salvate. Sei sicuro di voler lasciare la pagina?";
+            }
+        });
+
+        $('form').on('submit', function () {
+            $(this).attr('data-submitting', 'true');
+        });
+    </script>
+}

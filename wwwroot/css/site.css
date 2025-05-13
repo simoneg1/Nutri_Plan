@@ -1,0 +1,130 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+    background-color: #f8f9fa;
+}
+
+/* Navbar styling */
+.navbar {
+    padding: 10px 0;
+    background-color: #fff !important;
+}
+
+.navbar-brand img {
+    max-height: 40px;
+}
+
+.nav-link {
+    font-weight: 500;
+    padding: 10px 15px !important;
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+    .nav-link:hover {
+        color: #00b760 !important;
+    }
+
+    .nav-link:after {
+        content: '';
+        position: absolute;
+        bottom: 5px;
+        left: 15px;
+        right: 15px;
+        height: 2px;
+        background-color: #00b760;
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .nav-link:hover:after {
+        transform: scaleX(1);
+    }
+
+/* Footer styling */
+.footer {
+    background-color: #fff;
+    padding: 20px 0;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    border-top: 1px solid #e9ecef;
+}
+
+/* Button styling */
+.btn-primary {
+    background-color: #00b760;
+    border-color: #00b760;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+    .btn-primary:hover, .btn-primary:focus {
+        background-color: #008c4a;
+        border-color: #008c4a;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 183, 96, 0.3);
+    }
+
+.btn-outline-primary {
+    color: #00b760;
+    border-color: #00b760;
+}
+
+    .btn-outline-primary:hover {
+        background-color: #00b760;
+        border-color: #00b760;
+    }
+
+/* Form control styling */
+.form-control:focus {
+    border-color: #00b760;
+    box-shadow: 0 0 0 0.25rem rgba(0, 183, 96, 0.25);
+}
+
+/* Custom dropdown menu */
+.dropdown-menu {
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 10px 0;
+}
+
+.dropdown-item {
+    padding: 10px 20px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+    .dropdown-item:hover {
+        background-color: #f8f9fa;
+        color: #00b760;
+    }
+
+    .dropdown-item i {
+        color: #00b760;
+    }
+
+.dropdown-divider {
+    margin: 5px 0;
+}

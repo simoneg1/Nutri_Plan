@@ -1,0 +1,127 @@
+﻿@page
+@model Nutri_Plan.Pages.Account.RegisterModel
+@{
+    ViewData["Title"] = "Registrati a Nutri_Plan";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Nutri_Plan</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/auth-pages.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Fix per nascondere gli alert vuoti */
+        .validation-summary-valid {
+            display: none;
+        }
+    </style>
+</head>
+<body class="auth-page">
+    <div class="auth-container">
+        <div class="auth-image" style="background-image: url('https://images.unsplash.com/photo-1534939561126-855b8675edd7?q=80&w=1932&auto=format&fit=crop');">
+            <div class="auth-image-content">
+                <h1 class="animate-up">Nutri_Plan</h1>
+                <p class="animate-up delay-100">Il primo passo verso uno stile di vita sano. Registrati oggi per ricevere un piano alimentare personalizzato basato sulle tue esigenze!</p>
+                <div class="animate-up delay-200">
+                    <i class="fas fa-heartbeat fa-3x mb-3"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="auth-form-container">
+            <div class="logo animate-up">
+                <!-- Logo qui se lo aggiungerai in seguito -->
+            </div>
+
+            <div class="auth-form-header animate-up">
+                <h2>Crea il tuo account</h2>
+                <p>Inizia il tuo percorso verso una vita più sana</p>
+            </div>
+
+            <!-- SOLUZIONE: Mostra gli errori solo se esplicitamente specificato -->
+            @if (Model.ShowErrors && !ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger animate-up mb-4">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                </div>
+            }
+
+            <form id="registerForm" method="post" class="animate-up delay-100">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input asp-for="Input.Nome" class="form-control" placeholder="Inserisci il tuo nome" />
+                            <label asp-for="Input.Nome">Nome</label>
+                            <span asp-validation-for="Input.Nome" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input asp-for="Input.Cognome" class="form-control" placeholder="Inserisci il tuo cognome" />
+                            <label asp-for="Input.Cognome">Cognome</label>
+                            <span asp-validation-for="Input.Cognome" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Email" class="form-control" autocomplete="username" placeholder="nome@esempio.com" />
+                    <label asp-for="Input.Email">Email</label>
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input asp-for="Input.Password" class="form-control" autocomplete="new-password" placeholder="Password" type="password" />
+                            <label asp-for="Input.Password">Password</label>
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" placeholder="Conferma Password" type="password" />
+                            <label asp-for="Input.ConfirmPassword">Conferma Password</label>
+                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group d-grid mb-4">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-user-plus me-2"></i> Registrati
+                    </button>
+                </div>
+
+                <div class="divider">
+                    <span>oppure</span>
+                </div>
+
+                <div class="auth-footer animate-up delay-200">
+                    <p>
+                        Hai già un account? <a asp-page="./Login">Accedi</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Inclusione diretta degli script di validazione -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+    <!-- Script personalizzato per le pagine di autenticazione -->
+    <script src="~/js/auth-pages.js" asp-append-version="true"></script>
+</body>
+</html>

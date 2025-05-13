@@ -1,0 +1,148 @@
+﻿@page
+@model Nutri_Plan.Pages.HomeModel
+@{
+    ViewData["Title"] = "Home - Nutri_Plan";
+}
+
+<div class="home-container">
+    <!-- Notifica di successo -->
+    @if (!string.IsNullOrEmpty(TempData["SuccessMessage"]?.ToString()))
+    {
+        <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+            <i class="fas fa-check-circle me-2"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="welcome-banner">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-7">
+                    <h1>Benvenuto, <span class="user-name">@Model.UserFullName</span></h1>
+                    <p class="lead">Oggi è un ottimo giorno per prenderti cura della tua alimentazione.</p>
+                    <div class="mt-4">
+                        <a href="/Diet/Create" class="btn btn-primary btn-lg me-2">
+                            <i class="fas fa-plus-circle me-2"></i>Crea Nuovo Piano
+                        </a>
+                        <a href="/Diet/View" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-list me-2"></i>I Miei Piani
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-5 text-end d-none d-md-block">
+                    <img src="~/images/nutrition-hero.svg" alt="Nutrizione" class="img-fluid rounded welcome-image" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <h3>Piano Alimentare</h3>
+                    <p>Crea il tuo piano alimentare personalizzato basato sul tuo profilo e sui tuoi obiettivi.</p>
+                    <a href="/Diet/Create" class="btn btn-sm btn-primary">Inizia Ora</a>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-apple-alt"></i>
+                    </div>
+                    <h3>Esplora Alimenti</h3>
+                    <p>Scopri i valori nutrizionali degli alimenti e trova nuove idee per la tua dieta.</p>
+                    <a href="/Foods" class="btn btn-sm btn-primary">Esplora Alimenti</a>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.HasDiet)
+        {
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="current-plan-card">
+                        <h3>Il tuo piano alimentare attuale</h3>
+                        <div class="card-body">
+                            <h4 class="mb-3">Piano creato il @Model.CurrentDietDate.ToString("dd/MM/yyyy")</h4>
+                            <div class="row">
+                                <div class="col-md-3 mb-3">
+                                    <div class="nutrition-stat">
+                                        <span class="stat-value">@Model.CurrentDietCalories</span>
+                                        <span class="stat-label">Calorie</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="nutrition-stat">
+                                        <span class="stat-value">@Model.CurrentDietProtein g</span>
+                                        <span class="stat-label">Proteine</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="nutrition-stat">
+                                        <span class="stat-value">@Model.CurrentDietCarbs g</span>
+                                        <span class="stat-label">Carboidrati</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="nutrition-stat">
+                                        <span class="stat-value">@Model.CurrentDietFat g</span>
+                                        <span class="stat-label">Grassi</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-end mt-3">
+                                <a href="/Diet/View" class="btn btn-outline-primary">Vedi Dettaglio</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="setup-profile-card">
+                        <div class="setup-icon">
+                            <i class="fas fa-user-edit"></i>
+                        </div>
+                        <h3>Completa il tuo Profilo</h3>
+                        <p>Prima di creare il tuo piano alimentare personalizzato, completa il tuo profilo con dati come altezza, peso e obiettivi.</p>
+                        <a href="/Profile/Edit" class="btn btn-success">Completa il Profilo</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="nutrition-tips mt-5">
+        <div class="container">
+            <h2 class="section-title">Suggerimenti Nutrizionali</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="tip-card">
+                        <h4><i class="fas fa-leaf me-2"></i> Verdure a Foglia Verde</h4>
+                        <p>Le verdure a foglia verde sono ricche di nutrienti, fibre e antiossidanti. Prova ad includerle in ogni pasto principale.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="tip-card">
+                        <h4><i class="fas fa-tint me-2"></i> Idratazione</h4>
+                        <p>Bere almeno 2 litri di acqua al giorno aiuta a mantenere il corpo idratato e migliora il metabolismo.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="tip-card">
+                        <h4><i class="fas fa-clock me-2"></i> Pasti Regolari</h4>
+                        <p>Mantenere un orario regolare dei pasti aiuta a stabilizzare i livelli di zucchero nel sangue e prevenire gli attacchi di fame.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
